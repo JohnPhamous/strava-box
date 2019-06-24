@@ -75,7 +75,7 @@ async function updateGist(data) {
     return {
       ...activity,
       percent: percent.toFixed(1),
-      barChart: generateBarChart(percent, 12)
+      barChart: generateBarChart(percent, 35)
     };
   });
 
