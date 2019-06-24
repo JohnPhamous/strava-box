@@ -1,10 +1,14 @@
 <p align="center">
-  <img width="400" src="https://user-images.githubusercontent.com/4658208/54497463-4be25680-48d1-11e9-9f84-1ca605ae100f.png">
-  <h3 align="center">waka-box</h3>
-  <p align="center">Update a pinned gist to contain your weekly WakaTime stats</p>
+  <img width="400" src="https://i.imgur.com/aVJXxvE.png">
+  <h3 align="center">strava-box</h3>
+  <p align="center">Update a gist to contain your YTD Strava distances</p>
 </p>
 
 ---
+
+## Previous Work
+
+This repo is based off of [matchai's waka-box](https://github.com/matchai/waka-box).
 
 ## Setup
 
@@ -12,8 +16,9 @@
 
 1. Create a new public GitHub Gist (https://gist.github.com/)
 1. Create a token with the `gist` scope and copy it. (https://github.com/settings/tokens/new)
-1. Create a WakaTime account (https://wakatime.com/signup)
-1. In your account settings, copy the existing WakaTime API Key (https://wakatime.com/settings/account)
+1. Create a Strava Application (https://www.strava.com/settings/api)
+1. Copy the `Access Token`
+1. Get your `Athlete Token` by going to https://www.strava.com, click your profile photo in the top right corner. Copy the ID in the url. `https://www.strava.com/athletes/`**`12345`**
 
 ### Project setup
 
@@ -24,6 +29,7 @@
 1. Go to Project Settings > Environment Variables
 1. Add the following environment variables:
 
-- **GIST_ID:** The ID portion from your gist url `https://gist.github.com/matchai/`**`6d5f84419863089a167387da62dd7081`**.
+- **GIST_ID:** The ID portion from your gist url `https://gist.github.com/<github username>/`**`6d5f84419863089a167387da62dd7081`**.
 - **GITHUB_TOKEN:** The GitHub token generated above.
-- **WAKATIME_API_KEY:** The API key for your WakaTime account.
+- **STRAVA_ATHLETE_ID:** The ID you got from visiting your profile page.
+- **STRAVA_ACCESS_TOKEN:** The access token you got from the Strava API page.
