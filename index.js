@@ -120,19 +120,23 @@ function generateBarChart(percent, size) {
 }
 
 function formatDistance(distance) {
-  const trimmedDistance = parseFloat(distance).toFixed(2);
   switch (units) {
     case "meters":
-      return `${trimmedDistance} m`;
+      return `${metersToKm(distance)} km`;
     case "miles":
       return `${metersToMiles(distance)} mi`;
     default:
-      return `${trimmedDistance} m`;
+      return `${metersToKm(distance)} km`;
   }
 }
 
 function metersToMiles(meters) {
   const CONVERSION_CONSTANT = 0.000621371192;
+  return (meters * CONVERSION_CONSTANT).toFixed(2);
+}
+
+function metersToKm(meters) {
+  const CONVERSION_CONSTANT = 0.001;
   return (meters * CONVERSION_CONSTANT).toFixed(2);
 }
 
