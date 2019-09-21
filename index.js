@@ -132,7 +132,7 @@ async function updateGist(data) {
       ...activity,
       distance: formatDistance(activity["distance"]),
       pace: `${pace}/h`,
-      barChart: generateBarChart(percent, 26)
+      barChart: generateBarChart(percent, 19)
     };
   }).map(activity => {
     // Format the data to be displayed in the Gist
