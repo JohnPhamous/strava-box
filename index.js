@@ -104,12 +104,11 @@ async function updateGist(data) {
 
   let totalDistance = 0;
 
-  // Store the activity name and distance
-  let activities = Object.keys(keyMappings).map(activityType => {
+  const lines = Object.keys(keyMappings).map(activityType => {
+    // Store the activity name and distance
     const { key } = keyMappings[activityType];
     try {
       const { distance } = data[key];
-
       totalDistance += distance;
       return {
         name: activityType,
@@ -117,34 +116,22 @@ async function updateGist(data) {
       };
     } catch (error) {
       console.error(`Unable to get distance\n${error}`);
-      const distance = 0;
       return {
         name: activityType,
-        distance
+        distance: 0
       };
     }
-  });
-
-  // Calculate the percentages and bar charts for the 3 activities
-  activities = activities.map(activity => {
+  }).map(activity => {
+    // Calculate the percentages and bar charts for the 3 activities
     const percent = (activity["distance"] / totalDistance) * 100;
     return {
       ...activity,
+      distance: formatDistance(activity["distance"]),
       percent: percent.toFixed(1),
       barChart: generateBarChart(percent, 28)
     };
-  });
-
-  // Append and/or convert the distance units
-  activities = activities.map(activity => {
-    return {
-      ...activity,
-      distance: formatDistance(activity["distance"])
-    };
-  });
-
-  // Format the data to be displayed in the Gist
-  const lines = activities.map(activity => {
+  }).map(activity => {
+    // Format the data to be displayed in the Gist
     const { name, distance, percent, barChart } = activity;
     return `${name.padEnd(10)} ${distance.padEnd(
       13
@@ -169,18 +156,18 @@ async function updateGist(data) {
 }
 
 function generateBarChart(percent, size) {
-    const syms = "░▏▎▍▌▋▊▉█";
+  const syms = "░▏▎▍▌▋▊▉█";
 
-    const frac = size * 8 * percent / 100;
-    const barsFull = Math.floor(frac / 8);
-    const semi = frac % 8;
-    const barsEmpty = size - barsFull - 1;
+  const frac = size * 8 * percent / 100;
+  const barsFull = Math.floor(frac / 8);
+  const semi = frac % 8;
+  const barsEmpty = size - barsFull - 1;
 
-    return [
-        syms.substring(8,9).repeat(barsFull),
-        syms.substring(semi,semi+1),
-        syms.substring(0,1).repeat(barsEmpty),
-    ].join('');
+  return [
+    syms.substring(8,9).repeat(barsFull),
+    syms.substring(semi,semi+1),
+    syms.substring(0,1).repeat(barsEmpty),
+  ].join('');
 }
 
 function formatDistance(distance) {
