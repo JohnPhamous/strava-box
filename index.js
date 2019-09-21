@@ -1,12 +1,14 @@
 require("dotenv").config();
 const Octokit = require("@octokit/rest");
 const fetch = require("node-fetch");
+const fs = require("fs");
 
 const {
   GIST_ID: gistId,
   GITHUB_TOKEN: githubToken,
   STRAVA_ATHLETE_ID: stravaAtheleteId,
   STRAVA_ACCESS_TOKEN: stravaAccessToken,
+  STRAVA_REFRESH_TOKEN: stravaRefreshToken,
   STRAVA_CLIENT_ID: stravaClientId,
   STRAVA_CLIENT_SECRET: stravaClientSecret,
   UNITS: units
@@ -22,26 +24,41 @@ async function main() {
 }
 
 /**
- * Updates strava authentication tokens if necessary
+ * Updates cached strava authentication tokens if necessary
  */
 function getStravaToken(){
-  /**
-   * TODO [#2](https://github.com/JohnPhamous/strava-box/issues/2):
-   * 1. read cache from disk. if it doesn't exist, use the current env's
-   *   STRAVA_ACCESS_TOKEN, STRAVA_REFRESH_TOKEN
-   * 2. use above variables:
-   *  https://www.strava.com/oauth/token
-   *  POST: {grant_type: "refresh_token",
-   *   client_id: `${stravaClientId}`,
-   *   client_secret: `${stravaClientSecret}`,
-   *   refresh_token: `${refresh_token}`
-   *  }
-   * 3. use response of above:
-   *  {"token_type":"Bearer","access_token":"XXX","refresh_token":"XXX"}
-   *  to update the disk cache's STRAVA_ACCESS_TOKEN, STRAVA_REFRESH_TOKEN
-   * 4. return stravaAccessToken
-   */
-  return stravaAccessToken;
+  // read cache from disk, defaulting to env vars
+  let cache;
+  try {
+    const jsonStr = fs.readFileSync("strava-auth.json");
+    cache = JSON.parse(jsonStr);
+  } catch (error) {
+    cache = {
+      stravaAccessToken: stravaAccessToken,
+      stravaRefreshToken: stravaRefreshToken
+    };
+  }
+
+  // get new tokens
+  const data = await fetch("https://www.strava.com/oauth/token", {
+    method: 'post',
+    body: JSON.stringify({
+      grant_type: 'refresh_token',
+      client_id: stravaClientId,
+      client_secret: stravaClientSecret,
+      refresh_token: cache.stravaRefreshToken
+    }),
+    headers: {'Content-Type': 'application/json'},
+  }).then(
+    data => data.json()
+  );
+  cache.stravaAccessToken = data.access_token;
+  cache.stravaRefreshToken = data.refresh_token;
+
+  // save to disk
+  fs.writeFileSync("strava-auth.json", JSON.stringify(cache));
+
+  return cache.stravaAccessToken;
 }
 
 /**
