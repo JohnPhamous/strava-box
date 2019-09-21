@@ -59,21 +59,22 @@ async function updateGist(data) {
   // Store the activity name and distance
   let activities = Object.keys(keyMappings).map(activityType => {
     const { key } = keyMappings[activityType];
-    let distance;
     try {
-      const { d } = data[key];
+      const { distance } = data[key];
 
-      totalDistance += d;
-      distance = d;
+      totalDistance += distance;
+      return {
+        name: activityType,
+        distance
+      };
     } catch (error) {
       console.error(`Unable to get distance\n${error}`);
-      distance = 0;
+      const distance = 0;
+      return {
+        name: activityType,
+        distance
+      };
     }
-
-    return {
-      name: activityType,
-      distance
-    };
   });
 
   // Calculate the percentages and bar charts for the 3 activities
