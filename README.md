@@ -38,4 +38,5 @@ This repo is based off of [matchai's waka-box](https://github.com/matchai/waka-b
 
 ### Errors
 
-If for whatever reason an update fails on CircleCI, you may have to re-copy a new `STRAVA_REFRESH_TOKEN` from https://www.strava.com/settings/api.
+If for whatever reason an update fails on CircleCI, you may have to re-copy a
+new `STRAVA_REFRESH_TOKEN` from https://www.strava.com/settings/api.
