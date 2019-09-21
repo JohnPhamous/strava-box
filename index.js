@@ -28,21 +28,26 @@ async function main() {
 /**
  * Updates cached strava authentication tokens if necessary
  */
-function getStravaToken(){
-  // read cache from disk, defaulting to env vars
-  let cache;
+async function getStravaToken(){
+  // default env vars
+  let cache = {
+    // stravaAccessToken: stravaAccessToken,
+    stravaRefreshToken: stravaRefreshToken
+  };
+  // read cache from disk
   try {
     const jsonStr = fs.readFileSync(AUTH_CACHE_FILE);
-    cache = JSON.parse(jsonStr);
+    const c = JSON.parse(jsonStr);
+    Object.keys(c).forEach(key => {
+      cache[key] = c[key];
+    });
   } catch (error) {
-    cache = {
-      // stravaAccessToken: stravaAccessToken,
-      stravaRefreshToken: stravaRefreshToken
-    };
+    console.log(error);
   }
+  console.debug(`ref: ${cache.stravaRefreshToken.substring(0,6)}`);
 
   // get new tokens
-  const data = fetch("https://www.strava.com/oauth/token", {
+  const data = await fetch("https://www.strava.com/oauth/token", {
     method: 'post',
     body: JSON.stringify({
       grant_type: 'refresh_token',
@@ -56,6 +61,8 @@ function getStravaToken(){
   );
   cache.stravaAccessToken = data.access_token;
   cache.stravaRefreshToken = data.refresh_token;
+  console.debug(`acc: ${cache.stravaAccessToken.substring(0,6)}`);
+  console.debug(`ref: ${cache.stravaRefreshToken.substring(0,6)}`);
 
   // save to disk
   fs.writeFileSync(AUTH_CACHE_FILE, JSON.stringify(cache));
@@ -68,11 +75,9 @@ function getStravaToken(){
  * The distance returned by the API is in meters
  */
 async function getStravaStats() {
-  const API = `${API_BASE}${stravaAtheleteId}/stats?access_token=${getStravaToken()}`;
+  const API = `${API_BASE}${stravaAtheleteId}/stats?access_token=${await getStravaToken()}`;
 
-  const data = await fetch(API);
-  const json = await data.json();
-
+  const json = await fetch(API).then(data => data.json());
   return json;
 }
 
