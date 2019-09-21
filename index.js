@@ -13,6 +13,8 @@ const {
   STRAVA_CLIENT_SECRET: stravaClientSecret,
   UNITS: units
 } = process.env;
+const API_BASE = "https://www.strava.com/api/v3/athletes/";
+const AUTH_CACHE_FILE = "strava-auth.json";
 
 const octokit = new Octokit({
   auth: `token ${githubToken}`
@@ -30,17 +32,17 @@ function getStravaToken(){
   // read cache from disk, defaulting to env vars
   let cache;
   try {
-    const jsonStr = fs.readFileSync("strava-auth.json");
+    const jsonStr = fs.readFileSync(AUTH_CACHE_FILE);
     cache = JSON.parse(jsonStr);
   } catch (error) {
     cache = {
-      stravaAccessToken: stravaAccessToken,
+      // stravaAccessToken: stravaAccessToken,
       stravaRefreshToken: stravaRefreshToken
     };
   }
 
   // get new tokens
-  const data = await fetch("https://www.strava.com/oauth/token", {
+  const data = fetch("https://www.strava.com/oauth/token", {
     method: 'post',
     body: JSON.stringify({
       grant_type: 'refresh_token',
@@ -56,7 +58,7 @@ function getStravaToken(){
   cache.stravaRefreshToken = data.refresh_token;
 
   // save to disk
-  fs.writeFileSync("strava-auth.json", JSON.stringify(cache));
+  fs.writeFileSync(AUTH_CACHE_FILE, JSON.stringify(cache));
 
   return cache.stravaAccessToken;
 }
@@ -66,7 +68,6 @@ function getStravaToken(){
  * The distance returned by the API is in meters
  */
 async function getStravaStats() {
-  const API_BASE = "https://www.strava.com/api/v3/athletes/";
   const API = `${API_BASE}${stravaAtheleteId}/stats?access_token=${getStravaToken()}`;
 
   const data = await fetch(API);
