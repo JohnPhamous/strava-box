@@ -108,34 +108,38 @@ async function updateGist(data) {
     // Store the activity name and distance
     const { key } = keyMappings[activityType];
     try {
-      const { distance } = data[key];
+      const { distance, moving_time } = data[key];
       totalDistance += distance;
       return {
         name: activityType,
+        pace: distance * 3600 / (moving_time ? moving_time : 1),
         distance
       };
     } catch (error) {
       console.error(`Unable to get distance\n${error}`);
       return {
         name: activityType,
+        pace: 0,
         distance: 0
       };
     }
   }).map(activity => {
     // Calculate the percentages and bar charts for the 3 activities
     const percent = (activity["distance"] / totalDistance) * 100;
+    const pacePH = formatDistance(activity["pace"]);
+    const pace = pacePH.substring(0, pacePH.length - 3);  // strip unit
     return {
       ...activity,
       distance: formatDistance(activity["distance"]),
-      percent: percent.toFixed(1),
-      barChart: generateBarChart(percent, 28)
+      pace: `${pace}/h`,
+      barChart: generateBarChart(percent, 26)
     };
   }).map(activity => {
     // Format the data to be displayed in the Gist
-    const { name, distance, percent, barChart } = activity;
+    const { name, distance, pace, barChart } = activity;
     return `${name.padEnd(10)} ${distance.padEnd(
       13
-    )} ${barChart} ${percent.padStart(5)}%`;
+    )} ${barChart} ${pace.padStart(7)}`;
   });
 
   try {
