@@ -24,7 +24,14 @@ jobs:
     <<: *defaults
     steps:
       - install
+      - restore_cache:
+          keys:
+            - strava-auth
       - run: node index.js
+      - save_cache:
+          key: strava-auth
+          paths:
+            - strava-auth.json
 
 workflows:
   version: 2

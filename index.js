@@ -7,6 +7,8 @@ const {
   GITHUB_TOKEN: githubToken,
   STRAVA_ATHLETE_ID: stravaAtheleteId,
   STRAVA_ACCESS_TOKEN: stravaAccessToken,
+  STRAVA_CLIENT_ID: stravaClientId,
+  STRAVA_CLIENT_SECRET: stravaClientSecret,
   UNITS: units
 } = process.env;
 
@@ -20,12 +22,35 @@ async function main() {
 }
 
 /**
+ * Updates strava authentication tokens if necessary
+ */
+function getStravaToken(){
+  /**
+   * TODO [#2](https://github.com/JohnPhamous/strava-box/issues/2):
+   * 1. read cache from disk. if it doesn't exist, use the current env's
+   *   STRAVA_ACCESS_TOKEN, STRAVA_REFRESH_TOKEN
+   * 2. use above variables:
+   *  https://www.strava.com/oauth/token
+   *  POST: {grant_type: "refresh_token",
+   *   client_id: `${stravaClientId}`,
+   *   client_secret: `${stravaClientSecret}`,
+   *   refresh_token: `${refresh_token}`
+   *  }
+   * 3. use response of above:
+   *  {"token_type":"Bearer","access_token":"XXX","refresh_token":"XXX"}
+   *  to update the disk cache's STRAVA_ACCESS_TOKEN, STRAVA_REFRESH_TOKEN
+   * 4. return stravaAccessToken
+   */
+  return stravaAccessToken;
+}
+
+/**
  * Fetches your data from the Strava API
  * The distance returned by the API is in meters
  */
 async function getStravaStats() {
   const API_BASE = "https://www.strava.com/api/v3/athletes/";
-  const API = `${API_BASE}${stravaAtheleteId}/stats?access_token=${stravaAccessToken}`;
+  const API = `${API_BASE}${stravaAtheleteId}/stats?access_token=${getStravaToken()}`;
 
   const data = await fetch(API);
   const json = await data.json();
