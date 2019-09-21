@@ -59,9 +59,16 @@ async function updateGist(data) {
   // Store the activity name and distance
   let activities = Object.keys(keyMappings).map(activityType => {
     const { key } = keyMappings[activityType];
-    const { distance } = data[key];
+    let distance;
+    try {
+      const { d } = data[key];
 
-    totalDistance += distance;
+      totalDistance += d;
+      distance = d;
+    } catch (error) {
+      console.error(`Unable to get distance\n${error}`);
+      distance = 0;
+    }
 
     return {
       name: activityType,
