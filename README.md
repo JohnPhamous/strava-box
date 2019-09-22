@@ -36,8 +36,3 @@ This repo is based off of [matchai's waka-box](https://github.com/matchai/waka-b
 - **STRAVA_CLIENT_SECRET:** The client secret you got from the Strava API page.
 - **STRAVA_REFRESH_TOKEN:** The refresh token you got from the Strava API page.
 - (optional) **UNITS:** `miles` or `metres` or `meters` (default)
-
-### Errors
-
-If for whatever reason an update fails on CircleCI, you may have to re-copy a
-new `STRAVA_REFRESH_TOKEN` from https://www.strava.com/settings/api.

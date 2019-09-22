@@ -27,6 +27,7 @@ jobs:
       - restore_cache:
           keys:
             - strava-auth-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
+            - strava-auth-
       - run: node index.js
       - save_cache:
           key: strava-auth-{{ .Environment.CIRCLE_BUILD_NUM }}
