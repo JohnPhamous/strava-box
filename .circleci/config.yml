@@ -20,7 +20,7 @@ commands:
             - node_modules
 
 jobs:
-  wakabox:
+  stravabox:
     <<: *defaults
     steps:
       - install
@@ -39,7 +39,7 @@ workflows:
 
   test:
     jobs:
-      - wakabox
+      - stravabox
 
   poll:
     triggers:
@@ -51,4 +51,4 @@ workflows:
               only:
                 - master
     jobs:
-      - wakabox
+      - stravabox
