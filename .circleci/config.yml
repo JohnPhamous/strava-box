@@ -20,27 +20,35 @@ commands:
             - node_modules
 
 jobs:
-  wakabox:
+  stravabox:
     <<: *defaults
     steps:
       - install
+      - restore_cache:
+          keys:
+            - strava-auth-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
+            - strava-auth-
       - run: node index.js
+      - save_cache:
+          key: strava-auth-{{ .Environment.CIRCLE_BUILD_NUM }}
+          paths:
+            - strava-auth.json
 
 workflows:
   version: 2
 
   test:
     jobs:
-      - wakabox
+      - stravabox
 
   poll:
     triggers:
       - schedule:
-          # Run once every 5 minutes
-          cron: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
+          # Run once every 15 minutes
+          cron: "0,15,30,45 * * * *"
           filters:
             branches:
               only:
                 - master
     jobs:
-      - wakabox
+      - stravabox

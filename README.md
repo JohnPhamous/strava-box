@@ -17,7 +17,7 @@ This repo is based off of [matchai's waka-box](https://github.com/matchai/waka-b
 1. Create a new public GitHub Gist (https://gist.github.com/)
 1. Create a token with the `gist` scope and copy it. (https://github.com/settings/tokens/new)
 1. Create a Strava Application (https://www.strava.com/settings/api)
-1. Copy the `Access Token`
+    - Copy the `Client ID`, `Client Secret`, and `Refresh Token`
 1. Get your `Athlete Token` by going to https://www.strava.com, click your profile photo in the top right corner. Copy the ID in the url. `https://www.strava.com/athletes/`**`12345`**
 
 ### Project setup
@@ -32,4 +32,7 @@ This repo is based off of [matchai's waka-box](https://github.com/matchai/waka-b
 - **GIST_ID:** The ID portion from your gist url `https://gist.github.com/<github username>/`**`6d5f84419863089a167387da62dd7081`**.
 - **GITHUB_TOKEN:** The GitHub token generated above.
 - **STRAVA_ATHLETE_ID:** The ID you got from visiting your profile page.
-- **STRAVA_ACCESS_TOKEN:** The access token you got from the Strava API page.
+- **STRAVA_CLIENT_ID:** The client ID you got from the Strava API page.
+- **STRAVA_CLIENT_SECRET:** The client secret you got from the Strava API page.
+- **STRAVA_REFRESH_TOKEN:** The refresh token you got from the Strava API page.
+- (optional) **UNITS:** `miles` or `metres` or `meters` (default)
