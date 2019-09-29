@@ -104,7 +104,7 @@ async function updateGist(data) {
 
   let totalDistance = 0;
 
-  const lines = Object.keys(keyMappings).map(activityType => {
+  let lines = Object.keys(keyMappings).map(activityType => {
     // Store the activity name and distance
     const { key } = keyMappings[activityType];
     try {
@@ -141,6 +141,27 @@ async function updateGist(data) {
       13
     )} ${barChart} ${pace.padStart(7)}`;
   });
+
+  // Last 4 week average
+  let monthDistance = 0;
+  let monthTime = 0;
+  let monthAchievements = 0;
+  for (let [key, value] of Object.entries(data)){
+    if (key.startsWith("recent_") && key.endsWith("_totals")){
+      monthDistance += value["distance"];
+      monthTime += value["moving_time"];
+      monthAchievements += value["achievement_count"];
+    }
+  }
+  lines.push(
+    `Last month ${
+      formatDistance(monthDistance / 4).padEnd(13)
+    } ${
+      `${monthAchievements} achievements`.padEnd(19)
+    } ${
+      (monthTime / 3600).toFixed(0).padStart(6)
+    }h`
+  );
 
   try {
     // Get original filename to update that same file
