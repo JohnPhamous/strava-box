@@ -142,7 +142,7 @@ async function updateGist(data) {
     )} ${barChart} ${pace.padStart(7)}`;
   });
 
-  // Last 4 week average
+  // Last 4 weeks
   let monthDistance = 0;
   let monthTime = 0;
   let monthAchievements = 0;
@@ -155,7 +155,7 @@ async function updateGist(data) {
   }
   lines.push(
     `Last month ${
-      formatDistance(monthDistance / 4).padStart(13)
+      formatDistance(monthDistance).padStart(13)
     } ${
       `${monthAchievements} achievements`.padStart(19)
     } ${
