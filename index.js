@@ -137,7 +137,7 @@ async function updateGist(data) {
   }).map(activity => {
     // Format the data to be displayed in the Gist
     const { name, distance, pace, barChart } = activity;
-    return `${name.padEnd(10)} ${distance.padEnd(
+    return `${name.padEnd(10)} ${distance.padStart(
       13
     )} ${barChart} ${pace.padStart(7)}`;
   });
@@ -155,9 +155,9 @@ async function updateGist(data) {
   }
   lines.push(
     `Last month ${
-      formatDistance(monthDistance / 4).padEnd(13)
+      formatDistance(monthDistance / 4).padStart(13)
     } ${
-      `${monthAchievements} achievements`.padEnd(19)
+      `${monthAchievements} achievements`.padStart(19)
     } ${
       (monthTime / 3600).toFixed(0).padStart(6)
     }h`
