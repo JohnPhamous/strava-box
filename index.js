@@ -163,7 +163,9 @@ async function updateGist(data) {
         : ""
       ).padStart(19)
     } ${
-      (monthTime / 3600).toFixed(0).padStart(6)
+      `${(monthTime / 3600).toFixed(0)}`.padStart(3)
+    }:${
+      (monthTime / 60).toFixed(0) % 60
     }h`
   );
 
