@@ -87,6 +87,7 @@ async function updateGist(data) {
     gist = await octokit.gists.get({ gist_id: gistId });
   } catch (error) {
     console.error(`Unable to get gist\n${error}`);
+    throw error;
   }
 
   // Used to index the API response
@@ -183,6 +184,7 @@ async function updateGist(data) {
     });
   } catch (error) {
     console.error(`Unable to update gist\n${error}`);
+    throw error;
   }
 }
 
