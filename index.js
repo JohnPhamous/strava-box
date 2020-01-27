@@ -87,6 +87,7 @@ async function updateGist(data) {
     gist = await octokit.gists.get({ gist_id: gistId });
   } catch (error) {
     console.error(`Unable to get gist\n${error}`);
+    throw error;
   }
 
   // Used to index the API response
@@ -104,7 +105,7 @@ async function updateGist(data) {
 
   let totalDistance = 0;
 
-  const lines = Object.keys(keyMappings).map(activityType => {
+  let lines = Object.keys(keyMappings).map(activityType => {
     // Store the activity name and distance
     const { key } = keyMappings[activityType];
     try {
@@ -137,10 +138,37 @@ async function updateGist(data) {
   }).map(activity => {
     // Format the data to be displayed in the Gist
     const { name, distance, pace, barChart } = activity;
-    return `${name.padEnd(10)} ${distance.padEnd(
+    return `${name.padEnd(10)} ${distance.padStart(
       13
     )} ${barChart} ${pace.padStart(7)}`;
   });
+
+  // Last 4 weeks
+  let monthDistance = 0;
+  let monthTime = 0;
+  let monthAchievements = 0;
+  for (let [key, value] of Object.entries(data)){
+    if (key.startsWith("recent_") && key.endsWith("_totals")){
+      monthDistance += value["distance"];
+      monthTime += value["moving_time"];
+      monthAchievements += value["achievement_count"];
+    }
+  }
+  lines.push(
+    `Last month ${
+      formatDistance(monthDistance).padStart(13)
+    } ${
+      (
+        monthAchievements
+        ? `${monthAchievements} achievement${monthAchievements > 1 ? "s" : ""}`
+        : ""
+      ).padStart(19)
+    } ${
+      `${(monthTime / 3600).toFixed(0)}`.padStart(3)
+    }:${
+      (monthTime / 60).toFixed(0) % 60
+    }h`
+  );
 
   try {
     // Get original filename to update that same file
@@ -156,22 +184,24 @@ async function updateGist(data) {
     });
   } catch (error) {
     console.error(`Unable to update gist\n${error}`);
+    throw error;
   }
 }
 
 function generateBarChart(percent, size) {
   const syms = "░▏▎▍▌▋▊▉█";
 
-  const frac = size * 8 * percent / 100;
+  const frac = Math.floor((size * 8 * percent) / 100);
   const barsFull = Math.floor(frac / 8);
+  if (barsFull >= size) {
+    return syms.substring(8, 9).repeat(size);
+  }
   const semi = frac % 8;
-  const barsEmpty = size - barsFull - 1;
 
   return [
-    syms.substring(8,9).repeat(barsFull),
-    syms.substring(semi,semi+1),
-    syms.substring(0,1).repeat(barsEmpty),
-  ].join('');
+    syms.substring(8, 9).repeat(barsFull),
+    syms.substring(semi, semi + 1),
+  ].join("").padEnd(size, syms.substring(0, 1));
 }
 
 function formatDistance(distance) {
