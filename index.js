@@ -55,6 +55,11 @@ async function getStravaToken() {
     }),
     headers: { "Content-Type": "application/json" }
   }).then(data => data.json());
+  if (!data.access_token) {
+    throw new Error(
+      `Unable to refresh the Strava token\n${JSON.stringify(data)}`
+    );
+  }
   cache.stravaAccessToken = data.access_token;
   cache.stravaRefreshToken = data.refresh_token;
   console.debug(`acc: ${cache.stravaAccessToken.substring(0, 6)}`);
