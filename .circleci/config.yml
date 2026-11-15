@@ -26,11 +26,11 @@ jobs:
       - install
       - restore_cache:
           keys:
-            - strava-auth-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
-            - strava-auth-
+            - strava-auth-v2-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
+            - strava-auth-v2-
       - run: node index.js
       - save_cache:
-          key: strava-auth-{{ .Environment.CIRCLE_BUILD_NUM }}
+          key: strava-auth-v2-{{ .Environment.CIRCLE_BUILD_NUM }}
           paths:
             - strava-auth.json
 
