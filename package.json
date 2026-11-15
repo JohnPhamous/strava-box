@@ -4,6 +4,9 @@
   "description": "🏃‍♂️🏃‍♀️ Update a gist to contain your weekly Strava distances",
   "author": "John Pham <john@pham.codes>",
   "license": "ISC",
+  "scripts": {
+    "test": "node test.js"
+  },
   "dependencies": {
     "@octokit/rest": "^16.28.2",
     "dotenv": "^8.0.0",
